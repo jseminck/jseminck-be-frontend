@@ -37,22 +37,22 @@ module.exports = {
         exclude: /node_modules/,
         include: __dirname,
         query: {
-          plugins: ['transform-runtime'],
+          plugins: ['transform-runtime', 'transform-decorators-legacy'],
           presets: ['es2015', 'stage-0', 'react'],
         }
-      }, 
+      },
       {
         test: /\.json?$/,
         loader: 'json'
-      }, 
+      },
       {
         test: /\.css?$/,
           loaders: ['style', 'raw'],
           include: __dirname
       },
-      { test: /\.(jpe?g|png|gif|svg)$/, 
-        loader: 'url', 
-        query: {limit: 10240} 
+      { test: /\.(jpe?g|png|gif|svg)$/,
+        loader: 'url',
+        query: {limit: 10240}
       }
     ]
   }

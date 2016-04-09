@@ -1,58 +1,61 @@
-import React from 'react';
+import React from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as loginActions from "./loginActions";
+import * as awsActions from "./awsActions";
+import "./aws.css";
 
-import logo from './static/logo.png';
-import MainLoginForm from './MainLoginForm';
+import AwsInstance from "./AwsInstance";
 
-import './main.css';
-
-@connect(
-    state => state.login,
-    dispatch => bindActionCreators(loginActions, dispatch)
-)
-export default class MainContainer extends React.Component {
+class AwsContainer extends React.Component {
     static propTypes = {
         state: React.PropTypes.object.isRequired,
 
-        onInputChange: React.PropTypes.func.isRequired,
-        onLogin: React.PropTypes.func.isRequired
+        // Events
+        onLoadData: React.PropTypes.func.isRequired,
+        onStartInstance: React.PropTypes.func.isRequired,
+        onStopInstance: React.PropTypes.func.isRequired
     }
 
-    static contextTypes = {
-        router: React.PropTypes.object.isRequired
+    constructor(props) {
+        super(props);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.state.token) {
-            this.context.router.replace("aws");
-        }
+    componentDidMount() {
+        this.updateInstances();
+
+        setInterval(this.updateInstances.bind(this), (10 * 1000));
     }
 
-    onInputChange(field, event) {
-        this.props.onInputChange(field, event.target.value);
-    }
-
-    onSubmitClick() {
-        this.props.onLogin(this.props.state.username, this.props.state.password);
+    updateInstances() {
+        this.props.onLoadData();
     }
 
     render() {
         return (
-            <div className="container">
-                <div className="main">
-                    <div className="title">
-                        JSEMINCK.BE
-                    </div>
-                    <img className="logo" src={logo} />
-
-                    <MainLoginForm
-                        onInputChange={::this.onInputChange}
-                        onSubmitClick={::this.onSubmitClick}
-                    />
-                </div>
+            <div className="aws-grid">
+                {this.props.state.instances.map((instance, index) => {
+                    return (
+                        <AwsInstance
+                            key={index}
+                            {...instance}
+                            onStartInstance={this.props.onStartInstance}
+                            onStopInstance={this.props.onStopInstance}
+                        />
+                    );
+                })}
             </div>
         );
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        state: state.aws
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(awsActions, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AwsContainer);
