@@ -9,7 +9,7 @@ import MainLoginForm from './MainLoginForm';
 import './main.css';
 
 @connect(
-    state => state.login,
+    state => ({ state: state.login }),
     dispatch => bindActionCreators(loginActions, dispatch)
 )
 export default class MainContainer extends React.Component {
