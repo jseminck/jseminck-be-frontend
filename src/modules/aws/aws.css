@@ -1,0 +1,42 @@
+.aws-grid {
+  display: flex;
+  padding: 0 170px;
+}
+
+.aws-grid-cell {
+    display: flex;
+    flex: 1;
+    text-align: center;
+    margin: 0 20px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.aws-grid-cell__status {
+    padding: 10px;
+    flex: 0.2;
+}
+
+.aws-grid-cell__status--green {
+    color: #587058;
+}
+
+.aws-grid-cell__status--orange {
+    color: #FFD800;
+}
+
+.aws-grid-cell__status--red {
+    color: #E86850;
+}
+
+.aws-grid-cell__name {
+    padding: 15px 20px;
+    flex: 0.7;
+    text-align: left;
+}
+
+.aws-grid-cell__action {
+    padding: 15px 20px;
+    flex: 0.4;
+    text-align: left;
+}
