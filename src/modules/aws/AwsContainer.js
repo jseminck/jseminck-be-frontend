@@ -1,61 +1,58 @@
-import React from "react";
+import React from 'react';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as awsActions from "./awsActions";
-import "./aws.css";
+import * as loginActions from "./loginActions";
 
-import AwsInstance from "./AwsInstance";
+import logo from './static/logo.png';
+import MainLoginForm from './MainLoginForm';
 
-class AwsContainer extends React.Component {
+import './main.css';
+
+@connect(
+    state => state.login,
+    dispatch => bindActionCreators(loginActions, dispatch)
+)
+export default class MainContainer extends React.Component {
     static propTypes = {
         state: React.PropTypes.object.isRequired,
 
-        // Events
-        onLoadData: React.PropTypes.func.isRequired,
-        onStartInstance: React.PropTypes.func.isRequired,
-        onStopInstance: React.PropTypes.func.isRequired
+        onInputChange: React.PropTypes.func.isRequired,
+        onLogin: React.PropTypes.func.isRequired
     }
 
-    constructor(props) {
-        super(props);
+    static contextTypes = {
+        router: React.PropTypes.object.isRequired
     }
 
-    componentDidMount() {
-        this.updateInstances();
-
-        setInterval(this.updateInstances.bind(this), (10 * 1000));
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.state.token) {
+            this.context.router.replace("aws");
+        }
     }
 
-    updateInstances() {
-        this.props.onLoadData();
+    onInputChange(field, event) {
+        this.props.onInputChange(field, event.target.value);
+    }
+
+    onSubmitClick() {
+        this.props.onLogin(this.props.state.username, this.props.state.password);
     }
 
     render() {
         return (
-            <div className="aws-grid">
-                {this.props.state.instances.map((instance, index) => {
-                    return (
-                        <AwsInstance
-                            key={index}
-                            {...instance}
-                            onStartInstance={this.props.onStartInstance}
-                            onStopInstance={this.props.onStopInstance}
-                        />
-                    );
-                })}
+            <div className="container">
+                <div className="main">
+                    <div className="title">
+                        JSEMINCK.BE
+                    </div>
+                    <img className="logo" src={logo} />
+
+                    <MainLoginForm
+                        onInputChange={::this.onInputChange}
+                        onSubmitClick={::this.onSubmitClick}
+                    />
+                </div>
             </div>
         );
     }
 }
-
-function mapStateToProps(state) {
-    return {
-        state: state.aws
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(awsActions, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AwsContainer);
